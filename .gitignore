@@ -1,1 +1,3 @@
 .obsidian/**
+.vscode/c_cpp_properties.json
+hardware/XIAO ESP32C6/main/lib/cred.h

@@ -4,7 +4,10 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:\\Users\\rafa\\OneDrive\\Documentos\\Arduino/**"
+                "C:/Users/rafa/OneDrive/Documentos/Arduino/**",
+                "C:/Espressif/**",
+                "C:/Users/rafa/AppData/Local/Arduino15/libraries/**",
+                "C:/Users/rafa/AppData/Local/Arduino15/libraries/Keyboard/src"
             ],
             "defines": [
                 "_DEBUG",
