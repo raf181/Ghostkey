@@ -16,3 +16,6 @@ The [XIAO ESP32C6](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.
 > Im aware that the [XIAO NRF52840](https://www.seeedstudio.com/Seeed-XIAO-BLE-nRF52840-p-5201.html) is capable of doing HID through USB, and has integrated BLE, but at the time of writing this, I don't have one to test.
 >
 > And using the XIAO SAMD21 and the XIAO [ESP32C6](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html) allows the posible use of longer range methods of communication (Zigbee, thread, wifi, BLE) at the beggining I will only focuse on wifi since it allows the use of the [ESP32C6](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html) as a AP or using it to conect to a wifi and get the payloads from a C2 server.
+
+# Install and Configuration
+

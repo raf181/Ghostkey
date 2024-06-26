@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include <WiFi.h>
 #include "lib/led-indicators.h"
 #include "lib/hardware-config.h"
 #include "lib/cred.h"
@@ -13,7 +14,6 @@ void setup()
 {
   Wire.begin();         // Initialize I2C
   Serial.begin(115200); // Initialize Serial for debugging
-  wificred();
   // ============= WiFi Configuration =============
   // longRange(); // Enable long range mode
   internal(); // Use internal antenna (default)
@@ -22,18 +22,18 @@ void setup()
   WificonectingLED(); // Blink the LED while connecting to WiFi
   Wificonect();       // Connect to WiFi
   WificonectLED();    // Blink the LED to indicate successful connection
+
+  // Display IP address in serial monitor
+  Serial.println("IP address: " + WiFi.localIP().toString());
 }
 
 void loop()
 {
   // Example command to send
   String command = "typ";
-
   Wire.beginTransmission(I2C_SLAVE_ADDR);
   Wire.write((const uint8_t *)command.c_str(), command.length());
   Wire.endTransmission();
-
   Serial.println("Sent command: " + command);
-
-  delay(1000); // Delay for demonstration purposes
+  delay(10000); // Delay for demonstration purposes
 }

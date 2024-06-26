@@ -12,5 +12,5 @@ void external() {
 
 void longRange() {
   Serial.println("Using long range mode");
-  WiFiGenericClass::enableLongRange(bool enable)
+  // WiFiGenericClass::enableLongRange(bool enable)
 }

