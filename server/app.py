@@ -9,7 +9,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'  # Replace with a strong secret key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///c2_framework.db'
 app.config['SQLALCHEMY_BINDS'] = {
-    'backup': 'sqlite:///c2_framework_backup.db'
+    'backup':'sqlite:///c2_framework_backup.db',
+    'backup2':'sqlite:///c2_framework_backup2.db',
+    'backup3':'sqlite:///c2_framework_backup3.db'
 }
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
