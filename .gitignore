@@ -1,3 +1,7 @@
 .obsidian/**
 .vscode/c_cpp_properties.json
 hardware/XIAO ESP32C6/main/lib/cred.h
+server/instance/**
+server/__pycache__/**
+server/migrations/**
+
