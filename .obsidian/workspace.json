@@ -18,6 +18,18 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "2263a82c2badbd9b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "hardware/XIAO SAMD21/Payloads/funni_Stick_V3/README.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
         ]
       }
@@ -148,10 +160,20 @@
   },
   "active": "238b1ba30598fb72",
   "lastOpenFiles": [
-    "hardware/XIAO SAMD21/Payloads/revers_shell/README.md",
+    "hardware/XIAO SAMD21/Payloads/funni_Stick_V3/README.md",
     "hardware/XIAO SAMD21/Payloads/file_retriver/README.md",
-    "hardware/XIAO SAMD21/Payloads/file_retriver/file_retriver.ps1",
-    "hardware/XIAO SAMD21/Payloads/file_retriver",
+    "README.md",
+    "hardware/XIAO SAMD21/Payloads/revers_shell/README.md",
+    "hardware/XIAO SAMD21/Payloads/funni_Stick_V3/Funni_Stick_V3.txt",
+    "hardware/XIAO SAMD21/Payloads/funni_Stick_V3/pw.exe",
+    "hardware/XIAO SAMD21/Payloads/funni_Stick_V3",
+    "hardware/XIAO SAMD21/Payloads/password_retriver/Funni_Stick_V3/Funni_Stick_V3.txt",
+    "hardware/XIAO SAMD21/Payloads/password_retriver/Funni_Stick_V3/pw.exe",
+    "hardware/XIAO SAMD21/Payloads/password_retriver/Funni_Stick_V3",
+    "hardware/XIAO SAMD21/Payloads/password_retriver/New folder",
+    "hardware/XIAO SAMD21/Payloads/password_retriver/pw.exe",
+    "hardware/XIAO SAMD21/Payloads/password_retriver/mimikatz.exe",
+    "hardware/XIAO SAMD21/Payloads/password_retriver",
     "wiki/main.md",
     "commit.md",
     "hardware/Install.md"

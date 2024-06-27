@@ -10,6 +10,13 @@ Ghostykey is a fake HID inputdevice that can be used to simulate keyboard input.
 >
 > The project is still in development and is not ready for real use. The project is not responsible for any damage caused by the use of this tool. Use it at your own risk.
 
+# Payloads
+### File Retriever:
+This PowerShell script searches for files within a specified directory that match given patterns (e.g., files with `.md` extension or containing `*pass*` in their names) and transfers them to a remote server using SCP (Secure Copy Protocol).
+
+### Revers Shell:
+Simple reverse shell using Netcat and a simple PowerShell script to create a connection between the target and the attacker.
+### DNS Compromiser:
 
 # Collaboration
 If you want to collaborate with the project or make your own version of the Ghostkey, feel free to do so. I only ask that you share with me your version of the project so I can learn from it and find ways to improve the Ghostkey.
