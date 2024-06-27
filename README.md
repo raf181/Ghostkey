@@ -17,6 +17,7 @@ This PowerShell script searches for files within a specified directory that matc
 ### Revers Shell:
 Simple reverse shell using Netcat and a simple PowerShell script to create a connection between the target and the attacker.
 ### DNS Compromiser:
+These uses powershell to change the DNS server of the target to a malicious one, allowing the attacker to redirect the target to a fake website or log the target's traffic.
 
 # Collaboration
 If you want to collaborate with the project or make your own version of the Ghostkey, feel free to do so. I only ask that you share with me your version of the project so I can learn from it and find ways to improve the Ghostkey.
