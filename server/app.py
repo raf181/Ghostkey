@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -14,8 +13,15 @@ app.config['SQLALCHEMY_BINDS'] = {
 }
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db.init_app(app)  # Initialize db with the app
+# Initialize db with the app
+db.init_app(app)
+
+# Migrate for database schema changes
 migrate = Migrate(app, db)
+
+# Create all tables based on your models
+with app.app_context():
+    db.create_all()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
