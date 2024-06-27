@@ -27,16 +27,13 @@ void setup()
   Serial.println("SAMD21 ready to receive commands over I2C");
 }
 
-void loop()
-{
+void loop() {
   // The loop is empty because all the work is done in the receiveEvent function
 }
 
-void receiveEvent(int bytes)
-{
+void receiveEvent(int bytes) {
   String command = "";
-  while (Wire.available())
-  {
+  while (Wire.available()) {
     char c = Wire.read();
     command += c;
   }
