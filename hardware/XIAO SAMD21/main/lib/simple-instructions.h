@@ -2,7 +2,7 @@
 #define S_INSTRUCTIONS_H
 
 #include <Keyboard.h>
-#include "complex-instructions.h"
+//#include "complex-instructions.h"
 
 // Basic functions
 void run() // Run dialog box

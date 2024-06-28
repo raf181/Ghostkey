@@ -2,7 +2,7 @@
 #define C_INSTRUCTIONS_H
 
 #include <Keyboard.h>
-#include "simple-instructions.h"
+// #include "simple-instructions.h"
 
 // Notepad
 void openNotepad() // Open Notepad
