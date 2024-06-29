@@ -1,40 +1,120 @@
 #include <Wire.h>   // Include the Wire library for I2C
 #include <WiFi.h>   // Include the WiFi library
+#include <ArduinoJson.h>  // Include ArduinoJson library
 
 const char* ssid = "CASA-PONVI";  // Replace with your WiFi network name (SSID)
 const char* password = "Famili@_9once_Vivanco$";  // Replace with your WiFi password
-// const int LED_BUILTIN = 6;
 
 const int I2C_SLAVE_ADDR = 0x08;  // Replace with your I2C slave device address
 
 WiFiServer server(80);  // Create a server instance on port 80
 
+// API Configuration
+const char* apiHost = "192.168.0.62";  // Replace with your API host address
+const int apiPort = 5000;  // Replace with your API port
+const String apiEndpoint = "/command";  // Replace with your API endpoint for fetching commands
+
+unsigned long lastApiCheckTime = 0;  // Variable to store the last time API was checked
+const unsigned long apiCheckInterval = 30000;  // Interval in milliseconds (e.g., 30 seconds)
+
+void fetchCommandFromAPI() {
+  WiFiClient client;
+  if (client.connect(apiHost, apiPort)) {
+    Serial.println("Connected to API");
+    client.print(String("GET ") + apiEndpoint + "?esp_id=esp32_1 HTTP/1.1\r\n" +
+                 "Host: " + apiHost + "\r\n" +
+                 "Connection: close\r\n\r\n");
+
+    // Wait for response
+    while (client.connected() && !client.available()) delay(1);
+
+    // Read response headers
+    String response = "";
+    boolean headersEnd = false;
+    while (client.available()) {
+      String line = client.readStringUntil('\r');
+      if (line == "\n") {
+        headersEnd = true;
+        break;  // End of headers found
+      }
+    }
+
+    // Read response body (JSON)
+    if (headersEnd) {
+      while (client.available()) {
+        response += client.readStringUntil('\r');
+      }
+    }
+    client.stop();
+
+    Serial.println("Raw JSON response:");
+    Serial.println(response);
+
+    // Parse JSON
+    StaticJsonDocument<1024> jsonDoc;  // Adjust size as necessary
+    DeserializationError error = deserializeJson(jsonDoc, response);
+
+    if (error) {
+      Serial.print("JSON parse error: ");
+      Serial.println(error.c_str());
+      return;
+    }
+
+    // Extract command
+    String commandFromAPI = jsonDoc["command"].as<String>();
+    commandFromAPI.trim();
+
+    // Send command over I2C
+    Wire.beginTransmission(I2C_SLAVE_ADDR);
+    Wire.write((const uint8_t *)commandFromAPI.c_str(), commandFromAPI.length());
+    Wire.endTransmission();
+
+    Serial.println("Sent command from API: " + commandFromAPI);
+  } else {
+    Serial.println("Failed to connect to API");
+  }
+}
+
+
+
 void setup() {
   Wire.begin();     // Initialize I2C communication
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(115200);
-
   connectToWiFi();
+  server.begin();  // Start HTTP server
 }
 
 void loop() {
-  WiFiClient client = server.accept(); // Changed to accept() due to deprecation
+  unsigned long currentMillis = millis();
+
+  // Check if it's time to fetch command from API
+  if (currentMillis - lastApiCheckTime >= apiCheckInterval) {
+    lastApiCheckTime = currentMillis;
+    fetchCommandFromAPI();
+  }
+
+  handleDirectMode();  // Handle direct mode concurrently
+}
+
+void handleDirectMode() {
+  WiFiClient client = server.accept(); // Accept incoming client connections
 
   if (client) {
     Serial.println("New client connected");
 
-    String currentLine = ""; // Make a String to hold incoming data from the client
+    String currentLine = ""; // String to hold incoming data from the client
     String command = "";     // Variable to hold the command
+
+    // Read client request
     while (client.connected()) {
       if (client.available()) {
         char c = client.read();
-        Serial.write(c); // Print it to the Serial Monitor
+        Serial.write(c); // Print to the Serial Monitor
         if (c == '\n') {
-          // If the current line is blank, you got two newline characters in a row.
-          // That's the end of the HTTP request from the client, so send a response:
+          // If the current line is blank, end of HTTP request is reached
           if (currentLine.length() == 0) {
-            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-            // and a content-type so the client knows what's coming, then a blank line:
+            // Send HTTP response headers
             client.println("HTTP/1.1 200 OK");
             client.println("Content-type:text/html");
             client.println();
@@ -60,17 +140,18 @@ void loop() {
               client.println("Invalid request");
             }
 
-            // The HTTP response ends with another blank line
-            client.println();
+            // End client connection
+            client.stop();
+            Serial.println("Client disconnected");
             break;
-          } else { // If you got a newline, then clear currentLine
-            currentLine = "";
+          } else {
+            currentLine = ""; // Clear currentLine for next request
           }
-        } else if (c != '\r') { // If you got anything else but a carriage return character,
-          currentLine += c; // Add it to the end of the currentLine
+        } else if (c != '\r') { // Add to currentLine if not end of line
+          currentLine += c;
         }
 
-        // Check for the command in the GET request
+        // Check for command in the GET request
         if (currentLine.startsWith("GET /command?cmd=")) {
           int start = currentLine.indexOf('=');
           int end = currentLine.indexOf(' ', start);
@@ -81,10 +162,6 @@ void loop() {
         }
       }
     }
-
-    // Close the connection
-    client.stop();
-    Serial.println("Client disconnected");
   }
 }
 
@@ -104,12 +181,9 @@ void connectToWiFi() {
   Serial.println("WiFi connected");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
-
-  server.begin();
   Serial.println("HTTP server started");
 
-  // Blink LED to indicate successful connection
-  blinkLED(2, 250);
+  blinkLED(2, 250); // Blink LED to indicate successful connection
 }
 
 void blinkLED(int numBlinks, int blinkInterval) {
