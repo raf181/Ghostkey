@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "hardware/XIAO SAMD21/Payloads/file_retriver/README.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               }
@@ -97,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "hardware/XIAO SAMD21/Payloads/file_retriver/README.md",
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "hardware/XIAO SAMD21/Payloads/file_retriver/README.md",
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +137,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "hardware/XIAO SAMD21/Payloads/file_retriver/README.md"
+                "file": "README.md"
               }
             }
           }
@@ -160,8 +160,8 @@
   },
   "active": "238b1ba30598fb72",
   "lastOpenFiles": [
-    "hardware/XIAO SAMD21/Payloads/funni_Stick_V3/README.md",
     "hardware/XIAO SAMD21/Payloads/file_retriver/README.md",
+    "hardware/XIAO SAMD21/Payloads/funni_Stick_V3/README.md",
     "README.md",
     "hardware/XIAO SAMD21/Payloads/revers_shell/README.md",
     "hardware/XIAO SAMD21/Payloads/funni_Stick_V3/Funni_Stick_V3.txt",

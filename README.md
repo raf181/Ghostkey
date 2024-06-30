@@ -27,3 +27,5 @@ The project is open source and is under the [GPL-3.0 license](https://github.com
 | Permissions                                                                                | Limitations               | Conditions                                                                                   |
 | ------------------------------------------------------------------------------------------ | ------------------------- | -------------------------------------------------------------------------------------------- |
 | Commercial use ✔️<br>Modification ✔️<br>Distribution ✔️<br>Patent use ✔️<br>Private use ✔️ | Liability ❌<br>Warranty ❌ | License and copyright notice ℹ️<br>State changes ℹ️<br>Disclose source ℹ️<br>Same license ℹ️ |
+
+

