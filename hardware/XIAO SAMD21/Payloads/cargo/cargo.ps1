@@ -1,13 +1,19 @@
-# Function to read API details from existing 'cred' file
+# Function to read API details and encryption password from 'cred' file
 function GetAPICredentials {
     $credFilePath = "C:\CARGO\cred"
     
     # Check if 'cred' file exists
     if (Test-Path $credFilePath) {
         try {
-            # Read API details from 'cred' file
-            $apiDetails = Get-Content -Path $credFilePath | ConvertFrom-Json
-            return $apiDetails
+            # Read API details and encryption password from 'cred' file
+            $credData = Get-Content -Path $credFilePath | ConvertFrom-Json
+            return @{
+                URL = $credData.URL
+                Port = $credData.Port
+                esp_id = $credData.esp_id
+                delivery_key = $credData.delivery_key
+                encryption_password = $credData.encryption_password
+            }
         } catch {
             Write-Host "Failed to read 'cred' file: $_"
             return $null
@@ -27,7 +33,7 @@ function CompressAndEncryptFolder {
     )
     
     # Path to 7zr.exe (adjust as necessary)
-    $7zrExe = "C:\Path\To\7zr.exe"
+    $7zrExe = "7zr.exe"
 
     # Compress and encrypt
     $command = "& `"$7zrExe`" a -t7z `"$outputArchive`" `"$sourceFolder`" -p$encryptionPassword"
@@ -46,25 +52,21 @@ if (-not (Test-Path $targetDirectory)) {
 $sourceFolder = "C:\CARGO"
 # Define output archive path
 $outputArchive = "C:\CARGO.7z"
-# Encryption password (adjust as needed)
-$encryptionPassword = "YourEncryptionPassword"
+# Get API credentials and encryption password from 'cred' file
+$apiCredentials = GetAPICredentials
 
-# Compress and encrypt folder
-CompressAndEncryptFolder -sourceFolder $sourceFolder -outputArchive $outputArchive -encryptionPassword $encryptionPassword
+if ($apiCredentials) {
+    try {
+        # Compress and encrypt folder
+        CompressAndEncryptFolder -sourceFolder $sourceFolder -outputArchive $outputArchive -encryptionPassword $apiCredentials.encryption_password
 
-# Upload CARGO.7z to API
-try {
-    # Machine details
-    $machineName = $env:COMPUTERNAME
-    $userName = $env:USERNAME
-    $date = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+        # Machine details
+        $machineName = $env:COMPUTERNAME
+        $userName = $env:USERNAME
+        $date = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 
-    # Get API credentials from 'cred' file
-    $apiDetails = GetAPICredentials
-
-    if ($apiDetails) {
         # Construct API URL
-        $apiUrl = "https://$($apiDetails.URL):$($apiDetails.Port)/upload"
+        $apiUrl = "https://$($apiCredentials.URL):$($apiCredentials.Port)/upload"
 
         # Prepare API payload
         $apiPayload = @{
@@ -78,9 +80,9 @@ try {
         Invoke-RestMethod -Uri $apiUrl -Method Post -ContentType "multipart/form-data" -Body $apiPayload
 
         Write-Host "Upload to API successful."
-    } else {
-        Write-Host "Failed to get API credentials."
+    } catch {
+        Write-Host "Failed to upload to API: $_"
     }
-} catch {
-    Write-Host "Failed to upload to API: $_"
+} else {
+    Write-Host "Failed to get API credentials."
 }
