@@ -1,0 +1,1 @@
+Start-Process iexplore -ArgumentList "-k https://fakeupdate.net/wnc/"
