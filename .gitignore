@@ -1,2 +1,3 @@
 hardware/XIAO ESP32C6/main/lib/cred.h
 hardware/XIAO SAMD21/Payloads/funni_Stick_V3
+hardware/XIAO SAMD21/Payloads/cargo/workers/cred
